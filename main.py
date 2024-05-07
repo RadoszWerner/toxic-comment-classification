@@ -1,16 +1,31 @@
-# This is a sample Python script.
+import pandas as pd
+import numpy as np
+import re
+import nltk
+from gensim.models import Word2Vec
+from nltk import word_tokenize
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+nltk.download('punkt')
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def main():
+    train_data = pd.read_csv("jigsaw-toxic-comment-classification-challenge/train.csv")
+    train_data["comment_text"] = train_data["comment_text"].str.lower()
+    print(train_data["comment_text"])
+    print("pre clean:\n\n", train_data["comment_text"])
+
+    def cleaning(data):
+        # remove the characters in the first parameter
+        clean_column = re.sub('<.*?>', ' ', str(data))
+        # removes non-alphanumeric characters(exclamation point, colon, etc) except periods.
+        clean_column = re.sub('[^a-zA-Z0-9.]+', ' ', clean_column)
+        # tokenize
+        tokenized_column = word_tokenize(clean_column)
+        return tokenized_column
+
+    train_data["cleaned"] = train_data["comment_text"].apply(cleaning)
+    print("post clean:\n\n", train_data["cleaned"])
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
