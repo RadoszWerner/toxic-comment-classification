@@ -2,13 +2,21 @@ import pandas as pd
 import numpy as np
 import re
 import nltk
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk import word_tokenize, WordNetLemmatizer
+from keras.callbacks import Callback
+from keras.models import Model
+from keras.layers import Dense, Embedding, Input, LSTM, Bidirectional, GlobalMaxPool1D, Dropout
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing import sequence
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 #tylko za 1 razem
-nltk.download('wordnet')
-nltk.download('point')
+#nltk.download('wordnet')
+#nltk.download('point')
 
 def main():
     train_data = pd.read_csv("jigsaw-toxic-comment-classification-challenge/train.csv")
@@ -55,10 +63,23 @@ def main():
     labels_test = np.ravel(labels_test)
 
     # 3. CountVectorizer
-    # Create a count matrix for each comment
     count_vect = CountVectorizer()
     comment_train_counts = count_vect.fit_transform(comment_train.comment_text.astype(str))
     print("dupa")
+
+    # 4. TfidfTransformer
+    tf_transformer = TfidfTransformer(use_idf=False).fit(comment_train_counts)
+    comment_train_tf = tf_transformer.transform(comment_train_counts)
+
+    tfidf_transformer = TfidfTransformer()
+    comment_train_tfidf = tfidf_transformer.fit_transform(comment_train_counts)
+
+    # 5 Trenowanie klasyfikatora
+    clf = MultinomialNB().fit(comment_train_tfidf, labels_train)
+
+    # make the bag of words for the test data
+    comment_test_new_counts = count_vect.transform(comment_test.comment_text.astype(str))
+    comment_test_new_tfidf = tfidf_transformer.transform(comment_test_new_counts)
 
 
 if __name__ == '__main__':
