@@ -7,28 +7,35 @@ from nltk.stem import WordNetLemmatizer
 nltk.download('punkt')
 nltk.download('wordnet')
 
-# Load data
-train_data = pd.read_csv("jigsaw-toxic-comment-classification-challenge/train.csv")
-train_data["comment_text"] = train_data["comment_text"].str.lower()
+class DataPreprocessor:
+    def __init__(self, path):
+        self.path = path
+        self.data = None
+        self.X = None
+        self.y = None
 
-# Preprocessing data
-def cleaning(data):
-    clean_column = re.sub('<.*?>', ' ', str(data))
-    clean_column = re.sub('[^a-zA-Z0-9.]+', ' ', clean_column)
-    tokenized_column = word_tokenize(clean_column)
-    return tokenized_column
+    def load_data(self):
+        self.data = pd.read_csv(self.path)
+        self.data["comment_text"] = self.data["comment_text"].str.lower()
+        print(self.data)
 
-train_data["cleaned"] = train_data["comment_text"].apply(cleaning)
+    def clean_text(self, text):
+        clean_column = re.sub('<.*?>', ' ', str(text))
+        clean_column = re.sub('[^a-zA-Z0-9.]+', ' ', clean_column)
+        tokenized_column = word_tokenize(clean_column)
+        return tokenized_column
 
-# Lemmatization
-lemmatizer = WordNetLemmatizer()
+    def lemmatize_text(self, tokens):
+        lemmatizer = WordNetLemmatizer()
+        lemmatized_list = [lemmatizer.lemmatize(word) for word in tokens]
+        return lemmatized_list
 
-def lemmatizing(data):
-    lemmatized_list = [lemmatizer.lemmatize(word) for word in data]
-    return lemmatized_list
+    def preprocess_data(self):
+        self.data["cleaned"] = self.data["comment_text"].apply(self.clean_text)
+        self.data["lemmatized"] = self.data["cleaned"].apply(self.lemmatize_text)
+        self.data["comment_text"] = self.data["lemmatized"].apply(lambda x: ' '.join(x))
 
-train_data["lemmatized"] = train_data["cleaned"].apply(lemmatizing)
-train_data["comment_text"] = train_data["lemmatized"].apply(lambda x: ' '.join(x))
-
-X = train_data["comment_text"]
-y = train_data[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]]
+    def get_XY(self):
+        self.X = self.data["comment_text"]
+        self.y = self.data[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]]
+        return self.X, self.y
