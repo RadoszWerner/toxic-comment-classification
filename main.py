@@ -2,21 +2,27 @@ import pandas as pd
 import numpy as np
 import re
 import nltk
+from nltk.corpus import stopwords
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk import word_tokenize, WordNetLemmatizer
-from keras.callbacks import Callback
-from keras.models import Model
-from keras.layers import Dense, Embedding, Input, LSTM, Bidirectional, GlobalMaxPool1D, Dropout
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing import sequence
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+
+from LogisticRegression import LogisticRegressionFunction
+
+
+# from keras.callbacks import Callback
+# from keras.models import Model
+# from keras.layers import Dense, Embedding, Input, LSTM, Bidirectional, GlobalMaxPool1D, Dropout
+# from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing import sequence
+# from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 #tylko za 1 razem
 #nltk.download('wordnet')
-#nltk.download('point')
+#nltk.download('punkt')
+#nltk.download('stopwords')
 
 def main():
     train_data = pd.read_csv("jigsaw-toxic-comment-classification-challenge/train.csv")
@@ -35,6 +41,15 @@ def main():
 
     train_data["cleaned"] = train_data["comment_text"].apply(cleaning)
     print("post clean:\n\n", train_data["cleaned"])
+
+    stop_words = set(stopwords.words('english'))
+
+    def remove_stopwords(text):
+        filtered_words = [word for word in text if word not in stop_words]
+        return filtered_words
+
+    train_data["cleaned"] = train_data["cleaned"].apply(remove_stopwords)
+    print("post stop word removal:\n\n", train_data["cleaned"])
 
     # lemmatize all the words
     lemmatizer = WordNetLemmatizer()
@@ -65,7 +80,6 @@ def main():
     # 3. CountVectorizer
     count_vect = CountVectorizer()
     comment_train_counts = count_vect.fit_transform(comment_train.comment_text.astype(str))
-    print("dupa")
 
     # 4. TfidfTransformer
     tf_transformer = TfidfTransformer(use_idf=False).fit(comment_train_counts)
@@ -75,7 +89,9 @@ def main():
     comment_train_tfidf = tfidf_transformer.fit_transform(comment_train_counts)
 
     # 5 Trenowanie klasyfikatora
-    clf = MultinomialNB().fit(comment_train_tfidf, labels_train)
+    # clf = MultinomialNB().fit(comment_train_tfidf, labels_train)
+
+    best_params_LR, best_score_LR = LogisticRegressionFunction(comment_train_tfidf, labels_train)
 
     # make the bag of words for the test data
     comment_test_new_counts = count_vect.transform(comment_test.comment_text.astype(str))
