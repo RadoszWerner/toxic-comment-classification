@@ -1,14 +1,22 @@
 import pandas as pd
 import re
 import nltk
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 nltk.download('punkt')
 nltk.download('wordnet')
 
+
 class DataPreprocessor:
     def __init__(self, path):
+        self.y_identity_hate = None
+        self.y_insult = None
+        self.y_threat = None
+        self.y_obscene = None
+        self.y_severe_toxic = None
+        self.y_toxic = None
         self.path = path
         self.data = None
         self.X = None
@@ -30,10 +38,16 @@ class DataPreprocessor:
         lemmatized_list = [lemmatizer.lemmatize(word) for word in tokens]
         return lemmatized_list
 
+    def remove_stopwords(self, text):
+        stop_words = set(stopwords.words('english'))
+        filtered_words = [word for word in text if word not in stop_words]
+        return filtered_words
+
     def preprocess_data(self):
         self.data["cleaned"] = self.data["comment_text"].apply(self.clean_text)
         self.data["lemmatized"] = self.data["cleaned"].apply(self.lemmatize_text)
-        self.data["comment_text"] = self.data["lemmatized"].apply(lambda x: ' '.join(x))
+        self.data["stop_words"] = self.data["lemmatized"].apply(self.remove_stopwords)
+        self.data["comment_text"] = self.data["stop_words"].apply(lambda x: ' '.join(x))
 
     def get_XY(self):
         self.X = self.data["comment_text"]
