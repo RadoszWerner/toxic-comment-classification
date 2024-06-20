@@ -7,6 +7,7 @@ from nltk.stem import WordNetLemmatizer
 
 nltk.download('punkt')
 nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 class DataPreprocessor:
