@@ -50,6 +50,10 @@ class DataPreprocessor:
         self.data["stop_words"] = self.data["lemmatized"].apply(self.remove_stopwords)
         self.data["comment_text"] = self.data["stop_words"].apply(lambda x: ' '.join(x))
 
+    def filter_unlabeled_data(self):
+        label_columns = ["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]
+        self.data = self.data[(self.data[label_columns] != -1).all(axis=1)]
+
     def get_XY(self):
         self.X = self.data["comment_text"]
         self.y = self.data[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]]
