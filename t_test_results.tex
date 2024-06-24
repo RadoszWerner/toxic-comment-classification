@@ -1,24 +1,24 @@
-\begin{tabular}{lllrr}
+\begin{tabular}{llllrrrrr}
 \toprule
-Metric & Model 1 & Model 2 & t-stat & p-value \\
+Metric & Model 1 & Model 2 & Test & t-stat & p-value & Corrected p-value & Significant & Normality p-value \\
 \midrule
-precision & Regresja_Liniowa & Naive_Bayes & -1.8148 & 0.1437 \\
-precision & Regresja_Liniowa & CNN & -0.4787 & 0.6572 \\
-precision & Regresja_Liniowa & LSTM & 1.6437 & 0.1756 \\
-precision & Naive_Bayes & CNN & 0.2371 & 0.8243 \\
-precision & Naive_Bayes & LSTM & 3.0339 & 0.0386 \\
-precision & CNN & LSTM & 6.5646 & 0.0028 \\
-recall & Regresja_Liniowa & Naive_Bayes & 1.6034 & 0.1841 \\
-recall & Regresja_Liniowa & CNN & -1.3726 & 0.2418 \\
-recall & Regresja_Liniowa & LSTM & 0.2718 & 0.7992 \\
-recall & Naive_Bayes & CNN & -2.2837 & 0.0844 \\
-recall & Naive_Bayes & LSTM & -1.2314 & 0.2856 \\
-recall & CNN & LSTM & 3.7518 & 0.0199 \\
-f1_score & Regresja_Liniowa & Naive_Bayes & 1.2773 & 0.2706 \\
-f1_score & Regresja_Liniowa & CNN & -1.0057 & 0.3714 \\
-f1_score & Regresja_Liniowa & LSTM & 0.6876 & 0.5295 \\
-f1_score & Naive_Bayes & CNN & -1.7096 & 0.1625 \\
-f1_score & Naive_Bayes & LSTM & -0.6260 & 0.5652 \\
-f1_score & CNN & LSTM & 4.2290 & 0.0134 \\
+precision & Regresja_Liniowa & Naive_Bayes & t-test & -1.8148 & 0.1437 & 0.8625 & False & 0.7689 \\
+precision & Regresja_Liniowa & CNN & t-test & -0.2544 & 0.8117 & 4.8703 & False & 0.4745 \\
+precision & Regresja_Liniowa & LSTM & t-test & 1.9232 & 0.1268 & 0.7609 & False & 0.7491 \\
+precision & Naive_Bayes & CNN & t-test & 0.5712 & 0.5984 & 3.5904 & False & 0.2163 \\
+precision & Naive_Bayes & LSTM & t-test & 3.3495 & 0.0286 & 0.1715 & False & 0.0773 \\
+precision & CNN & LSTM & t-test & 5.7468 & 0.0045 & 0.0273 & True & 0.4508 \\
+recall & Regresja_Liniowa & Naive_Bayes & t-test & 1.6034 & 0.1841 & 1.1047 & False & 0.5583 \\
+recall & Regresja_Liniowa & CNN & t-test & -1.1117 & 0.3286 & 1.9714 & False & 0.7603 \\
+recall & Regresja_Liniowa & LSTM & t-test & 0.7559 & 0.4918 & 2.9507 & False & 0.5334 \\
+recall & Naive_Bayes & CNN & t-test & -2.1187 & 0.1015 & 0.6089 & False & 0.9819 \\
+recall & Naive_Bayes & LSTM & t-test & -0.8094 & 0.4637 & 2.7822 & False & 0.5135 \\
+recall & CNN & LSTM & t-test & 4.5223 & 0.0106 & 0.0638 & False & 0.6093 \\
+f1_score & Regresja_Liniowa & Naive_Bayes & t-test & 1.2773 & 0.2706 & 1.6235 & False & 0.7716 \\
+f1_score & Regresja_Liniowa & CNN & t-test & -0.7335 & 0.5039 & 3.0235 & False & 0.7790 \\
+f1_score & Regresja_Liniowa & LSTM & t-test & 1.3263 & 0.2554 & 1.5324 & False & 0.5128 \\
+f1_score & Naive_Bayes & CNN & t-test & -1.5121 & 0.2051 & 1.2303 & False & 0.9971 \\
+f1_score & Naive_Bayes & LSTM & t-test & -0.2048 & 0.8478 & 5.0866 & False & 0.4488 \\
+f1_score & CNN & LSTM & t-test & 4.4429 & 0.0113 & 0.0678 & False & 0.8479 \\
 \bottomrule
 \end{tabular}
